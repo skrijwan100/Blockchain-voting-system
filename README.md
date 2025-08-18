@@ -1,12 +1,23 @@
-# React + Vite
+# Blockchain Voting System 🗳️
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A decentralized application (DApp) for secure and transparent voting using Ethereum smart contracts.  
+This project ensures **one voter = one vote** by combining voter ID verification and wallet address checks.
 
-Currently, two official plugins are available:
+## Features
+- ✅ Voter ID verification (hashed with keccak256 for privacy)
+- ✅ One vote per wallet + voter ID
+- ✅ Transparent and immutable voting records
+- ✅ Simple and secure UI with MetaMask integration
+- ✅ Prevents duplicate or fraudulent votes
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
+- **Solidity** (Smart Contracts)
+- **Hardhat** (Contract Deployment & Testing)
+- **React** (Frontend)
+- **Ethers.js** (Blockchain Interaction)
+- **MetaMask** (Wallet Authentication)
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Future Improvements
+- Add zero-knowledge proofs for stronger privacy
+- Role-based admin panel for election setup
+- Support for multiple elections
