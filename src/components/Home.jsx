@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
-import { Vote, Shield, Users, ChevronRight, CheckCircle, AlertCircle } from 'lucide-react';
+import { Vote, Shield, Users, ChevronRight, CheckCircle, AlertCircle, Wallet } from 'lucide-react';
 import { voters } from '../../voterdata';
 import logo from "../assets/logo.png"
+import { ethers } from 'ethers';
+import { keccak256, toUtf8Bytes } from "ethers";
+import voteerchake from "../Votesystem.sol/saveallvoter.json"
 const VotingDAppHomepage = () => {
   const [voterID, setVoterID] = useState('');
+  const { ethereum } = window;
   const [isVerifying, setIsVerifying] = useState(false);
   const [verificationStatus, setVerificationStatus] = useState(null);
-
+  const [loder, setloder] = useState(false)
+  const [valided, setvalied] = useState(false)
+  const [tvalid,settvalid]=useState(false)
   const handleVerifyID = async (e) => {
     e.preventDefault();
     setIsVerifying(true);
@@ -26,7 +32,34 @@ const VotingDAppHomepage = () => {
     setVerificationStatus(isValid ? 'valid' : 'invalid');
     setIsVerifying(false);
   };
+  const handlevotervalid = async (e) => {
+    e.preventDefault();
+    setloder(true)
+const hashed = keccak256(toUtf8Bytes(voterID));
+console.log(hashed)
 
+    console.log(import.meta.env.VITE_INFURA_URL)
+    const infuraprovider = new ethers.JsonRpcProvider(
+      import.meta.env.VITE_INFURA_URL
+    )
+    const allvotercontract = new ethers.Contract(
+      import.meta.env.VITE_CONTRACT_DEPOLY_ADDRESS,
+      voteerchake.abi,
+      infuraprovider
+    )
+    const contractview = await allvotercontract.filters.onevote(hashed);
+    const showevent = await allvotercontract.queryFilter(contractview);
+    console.log(showevent)
+    if (showevent.length == 0) {
+      setvalied(true)
+    }
+    else{
+      settvalid(false)
+    }
+    setloder(false);
+
+
+  }
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-900 via-teal-800 to-cyan-900 relative overflow-hidden">
       {/* Animated background elements */}
@@ -99,76 +132,99 @@ const VotingDAppHomepage = () => {
 
         {/* Voter ID Verification Form */}
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 shadow-2xl">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-white mb-3">Verify Your Voter ID</h2>
-              <p className="text-gray-300">Enter your Voter ID to begin the secure voting process</p>
-            </div>
+          {valided ?
+            <>
+              {tvalid?
+              <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 shadow-2xl">
+                <div className="text-center mb-8">
+                  <h2 className="text-3xl font-bold text-pink-500 mb-3">Your Voter ID: {voterID} is not eligibile for Vote.</h2>
+                </div>
+              </div>
+              
+              :<div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 shadow-2xl">
+                <div className="text-center mb-8">
+                  <h2 className="text-3xl font-bold text-green-500 mb-3">Your Voter ID: {voterID} is eligibile for Vote.</h2>
+                  <button className="group relative px-8 py-4 bg-gradient-to-r  from-emerald-600 to-teal-600 hover:from-green-500 hover:to-emerald-700 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl cursor-pointer">
+                    <div className="flex items-center space-x-3 ">
+                      <Wallet className="w-6 h-6" />
+                      <span className='cursor-pointer'>Connect MetaMask</span>
+                    </div>
+                  </button>
 
-            <div className="space-y-6">
-              <div>
-                <label htmlFor="voterID" className="block text-sm font-medium text-gray-300 mb-2">
-                  Voter ID Number
-                </label>
-                <input
-                  type="text"
-                  id="voterID"
-                  value={voterID}
-                  onChange={(e) => setVoterID(e.target.value)}
-                  placeholder="Enter your voter ID (e.g., VID123456789)"
-                  className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                  disabled={isVerifying}
-                />
+                </div>
+              </div>}
+
+            </>
+
+            : <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 shadow-2xl">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold text-white mb-3">Verify Your Voter ID</h2>
+                <p className="text-gray-300">Enter your Voter ID to begin the secure voting process</p>
               </div>
 
-              {/* Verification Status */}
-              {verificationStatus && (
-                <div className={`flex items-center space-x-2 p-3 rounded-lg ${verificationStatus === 'valid'
-                  ? 'bg-green-500/20 border border-green-500/30'
-                  : 'bg-red-500/20 border border-red-500/30'
-                  }`}>
-                  {verificationStatus === 'valid' ? (
-                    <CheckCircle className="h-5 w-5 text-green-400" />
-                  ) : (
-                    <AlertCircle className="h-5 w-5 text-red-400" />
-                  )}
-                  <span className={`text-sm font-medium ${verificationStatus === 'valid' ? 'text-green-400' : 'text-red-400'
-                    }`}>
-                    {verificationStatus === 'valid'
-                      ? 'Voter ID verified successfully!'
-                      : 'Invalid Voter ID. Please check and try again.'}
-                  </span>
+              <div className="space-y-6">
+                <div>
+                  <label htmlFor="voterID" className="block text-sm font-medium text-gray-300 mb-2">
+                    Voter ID Number
+                  </label>
+                  <input
+                    type="text"
+                    id="voterID"
+                    value={voterID}
+                    onChange={(e) => setVoterID(e.target.value)}
+                    placeholder="Enter your voter ID (e.g., VID123456789)"
+                    className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    disabled={isVerifying}
+                  />
                 </div>
-              )}
 
-               {verificationStatus === 'valid' ? '': <button
-                onClick={handleVerifyID}
-                disabled={!voterID.trim() || isVerifying}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-gray-600 disabled:to-gray-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-              >
-                {isVerifying ? (
-                  <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                    <span>Verifying...</span>
-                  </>
-                ) : (
-                  <>
-                   <div className='flex'><span>Verify Voter ID</span>
-                      <ChevronRight className="h-5 w-5 mt-0.5" /></div>
-                    
-
-                  </>
+                {/* Verification Status */}
+                {verificationStatus && (
+                  <div className={`flex items-center space-x-2 p-3 rounded-lg ${verificationStatus === 'valid'
+                    ? 'bg-green-500/20 border border-green-500/30'
+                    : 'bg-red-500/20 border border-red-500/30'
+                    }`}>
+                    {verificationStatus === 'valid' ? (
+                      <CheckCircle className="h-5 w-5 text-green-400" />
+                    ) : (
+                      <AlertCircle className="h-5 w-5 text-red-400" />
+                    )}
+                    <span className={`text-sm font-medium ${verificationStatus === 'valid' ? 'text-green-400' : 'text-red-400'
+                      }`}>
+                      {verificationStatus === 'valid'
+                        ? 'Voter ID verified successfully!'
+                        : 'Invalid Voter ID. Please check and try again.'}
+                    </span>
+                  </div>
                 )}
-              </button>}
-              {verificationStatus === 'valid' &&( <div className="mt-6 text-center">
-                      <button className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer">
-                        Proceed to Vote
-                      </button>
-                    </div>)}
-            </div>
+
+                {verificationStatus === 'valid' ? '' : <button
+                  onClick={handleVerifyID}
+                  disabled={!voterID.trim() || isVerifying}
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-gray-600 disabled:to-gray-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                >
+                  {isVerifying ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      <span>Verifying...</span>
+                    </>
+                  ) : (
+                    <>
+                      <div className='flex'><span>Verify Voter ID</span>
+                        <ChevronRight className="h-5 w-5 mt-0.5" />
+                      </div>
+                    </>
+                  )}
+                </button>}
+                {verificationStatus === 'valid' && (<div className="mt-6 text-center">
+                  {loder ? <div className='flex items-center justify-center'><div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div></div> : <button onClick={handlevotervalid} className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer">
+                    Proceed to Vote
+                  </button>}
+                </div>)}
+              </div>
 
 
-          </div>
+            </div>}
         </div>
         {/* Features Grid */}
         <div className="grid md:grid-cols-3 gap-8 mb-16 mt-11">
