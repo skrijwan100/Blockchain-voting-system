@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Vote, Shield, Users, ChevronRight, CheckCircle, AlertCircle, Wallet } from 'lucide-react';
 import { voters } from '../../voterdata';
-import logo from "../assets/logo.png"
 import { ethers } from 'ethers';
 import { keccak256, toUtf8Bytes } from "ethers";
 import voteerchake from "../Votesystem.sol/saveallvoter.json"
+import Navbar from './Navbar';
 const VotingDAppHomepage = () => {
   const [voterID, setVoterID] = useState('');
   const { ethereum } = window;
@@ -12,7 +12,11 @@ const VotingDAppHomepage = () => {
   const [verificationStatus, setVerificationStatus] = useState(null);
   const [loder, setloder] = useState(false)
   const [valided, setvalied] = useState(false)
-  const [tvalid,settvalid]=useState(false)
+  const [tvalid, settvalid] = useState(false)
+  const [metaloder,setMetaloder]=useState(false)
+  const [allvalid,setallvalid]=useState(false)
+  const [account,setaccount]=useState('')
+  const [bal,setbal]=useState('')
   const handleVerifyID = async (e) => {
     e.preventDefault();
     setIsVerifying(true);
@@ -35,8 +39,8 @@ const VotingDAppHomepage = () => {
   const handlevotervalid = async (e) => {
     e.preventDefault();
     setloder(true)
-const hashed = keccak256(toUtf8Bytes(voterID));
-console.log(hashed)
+    const hashed = keccak256(toUtf8Bytes(voterID));
+    console.log(hashed)
 
     console.log(import.meta.env.VITE_INFURA_URL)
     const infuraprovider = new ethers.JsonRpcProvider(
@@ -53,13 +57,51 @@ console.log(hashed)
     if (showevent.length == 0) {
       setvalied(true)
     }
-    else{
+    else {
       settvalid(false)
     }
     setloder(false);
 
 
   }
+  const connectmetamask = async (e) => {
+    e.preventDefault();
+    setMetaloder(true)
+    if (!ethereum) {
+      alert("Install Window, or you don't have Metamask Account")
+      setMetaloder(false)
+      return;
+    }
+    const account = await ethereum.request({
+      method: 'eth_requestAccounts',
+    })
+    const fulladdress = account[0];
+    console.log(fulladdress)
+    const eth_bal = await ethereum.request({
+      method: 'eth_getBalance',
+      params: [
+        account[0], 'latest'
+      ]
+    })
+   const ethvalue= ethers.formatEther(eth_bal)
+   console.log(ethvalue)
+   setallvalid(true)
+   setaccount(fulladdress)
+   setbal(ethvalue)
+    setMetaloder(false)
+
+  }
+  if(allvalid){
+    return(
+      <>
+       <div className="min-h-screen bg-gradient-to-br from-emerald-900 via-teal-800 to-cyan-900 relative overflow-hidden">
+        <Navbar account={account} bal={bal}/>
+       </div>
+      </>
+    )
+
+  }
+  else{
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-900 via-teal-800 to-cyan-900 relative overflow-hidden">
       {/* Animated background elements */}
@@ -79,42 +121,7 @@ console.log(hashed)
       </div>
 
       {/* Navbar */}
-      <nav className="bg-black/20 backdrop-blur-md border-b border-white/10 relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo */}
-            <div className="flex items-center space-x-3">
-              <div className="bg-gradient-to-r from-emerald-400 to-teal-400 p-2 rounded-lg">
-                <img src={logo} className="h-10 w-10 text-white" />
-              </div>
-              <span className="text-xl font-bold text-white">Decentralized Voting</span>
-            </div>
-
-            {/* Navigation Links */}
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#" className="text-white hover:text-emerald-400 transition-colors font-medium">
-                Home
-              </a>
-              <a href="#" className="text-gray-300 hover:text-emerald-400 transition-colors font-medium">
-                Submit Vote
-              </a>
-              <a href="#" className="text-gray-300 hover:text-emerald-400 transition-colors font-medium">
-                View Results
-              </a>
-            </div>
-
-            {/* Mobile menu button */}
-            <div className="md:hidden">
-              <button className="text-white hover:text-blue-400 transition-colors">
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
+      <Navbar/>
       {/* Hero Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
         <div className="text-center mb-16">
@@ -134,25 +141,25 @@ console.log(hashed)
         <div className="max-w-2xl mx-auto">
           {valided ?
             <>
-              {tvalid?
-              <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 shadow-2xl">
-                <div className="text-center mb-8">
-                  <h2 className="text-3xl font-bold text-pink-500 mb-3">Your Voter ID: {voterID} is not eligibile for Vote.</h2>
+              {tvalid ?
+                <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 shadow-2xl">
+                  <div className="text-center mb-8">
+                    <h2 className="text-3xl font-bold text-pink-500 mb-3">Your Voter ID: {voterID} is not eligibile for Vote.</h2>
+                  </div>
                 </div>
-              </div>
-              
-              :<div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 shadow-2xl">
-                <div className="text-center mb-8">
-                  <h2 className="text-3xl font-bold text-green-500 mb-3">Your Voter ID: {voterID} is eligibile for Vote.</h2>
-                  <button className="group relative px-8 py-4 bg-gradient-to-r  from-emerald-600 to-teal-600 hover:from-green-500 hover:to-emerald-700 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl cursor-pointer">
-                    <div className="flex items-center space-x-3 ">
-                      <Wallet className="w-6 h-6" />
-                      <span className='cursor-pointer'>Connect MetaMask</span>
-                    </div>
-                  </button>
 
-                </div>
-              </div>}
+                : <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 shadow-2xl">
+                  <div className="text-center mb-8">
+                    <h2 className="text-3xl font-bold text-green-500 mb-3">Your Voter ID: {voterID} is eligibile for Vote.</h2>
+                    <button onClick={connectmetamask} className="group relative px-8 py-4 bg-gradient-to-r  from-emerald-600 to-teal-600 hover:from-green-500 hover:to-emerald-700 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl cursor-pointer">
+                      {metaloder?<div className='w-full h-full flex justify-center items-center '><div className='loder '></div></div>:<div className="flex items-center space-x-3 ">
+                        <Wallet className="w-6 h-6" />
+                        <span className='cursor-pointer'>Connect MetaMask</span>
+                      </div>}
+                    </button>
+
+                  </div>
+                </div>}
 
             </>
 
@@ -289,5 +296,6 @@ console.log(hashed)
     </div>
   );
 };
+}
 
 export default VotingDAppHomepage;
