@@ -41,7 +41,7 @@ export default function Navbar({account,bal}) {
                         {/* Address & Balance */}
                         <div className="flex flex-col">
                             <span className="text-sm font-mono truncate max-w-[150px]">{account.slice(0, 4)}...{account.slice(-4)}</span>
-                            <span className="text-xs opacity-80">{bal.slice(0,5)} SpETH</span>
+                            <span className="text-xs opacity-80">Id:{bal}</span>
                         </div>
                 </div>:""}
 

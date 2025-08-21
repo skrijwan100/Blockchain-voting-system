@@ -3,8 +3,9 @@ import { Vote, Shield, Users, ChevronRight, CheckCircle, AlertCircle, Wallet } f
 import { voters } from '../../voterdata';
 import { ethers } from 'ethers';
 import { keccak256, toUtf8Bytes } from "ethers";
-import voteerchake from "../Votesystem.sol/saveallvoter.json"
+import voteerchake from "../contracts/Votesystem.sol/Voter.json"
 import Navbar from './Navbar';
+import VotingInterface from '../pages/Voteoption';
 const VotingDAppHomepage = () => {
   const [voterID, setVoterID] = useState('');
   const { ethereum } = window;
@@ -51,14 +52,15 @@ const VotingDAppHomepage = () => {
       voteerchake.abi,
       infuraprovider
     )
-    const contractview = await allvotercontract.filters.onevote(hashed);
+    const contractview = await allvotercontract.filters.storevote(null,hashed);
     const showevent = await allvotercontract.queryFilter(contractview);
     console.log(showevent)
     if (showevent.length == 0) {
       setvalied(true)
     }
     else {
-      settvalid(false)
+      setvalied(true)
+      settvalid(true)
     }
     setloder(false);
 
@@ -87,7 +89,7 @@ const VotingDAppHomepage = () => {
    console.log(ethvalue)
    setallvalid(true)
    setaccount(fulladdress)
-   setbal(ethvalue)
+   setbal(voterID)
     setMetaloder(false)
 
   }
@@ -96,6 +98,7 @@ const VotingDAppHomepage = () => {
       <>
        <div className="min-h-screen bg-gradient-to-br from-emerald-900 via-teal-800 to-cyan-900 relative overflow-hidden">
         <Navbar account={account} bal={bal}/>
+        <VotingInterface voterID={voterID}/>
        </div>
       </>
     )

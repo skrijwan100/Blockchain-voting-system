@@ -1,23 +1,19 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.28;
 
-contract saveallvoter {
-    event onevote(
-        string indexed _voterid,
-        address newvoeraddress,
-        address indexed walletaddress
+contract Voter {
+    bytes32 public voterid;
+    address public voteraddress;
+    uint public votecandidate;
+    event storevote(
+        uint indexed votecandidate,
+        bytes32 indexed  voterid,
+        address wallate,
+        uint256 time
     );
 
-    function savevoter(string memory _voterid) public {
-        Voter newvoter = new Voter(_voterid, msg.sender);
-        emit onevote(_voterid, address(newvoter), msg.sender);
-    }
-}
-contract Voter {
-    string public voterid;
-    address public voteraddress;
-    constructor(string memory _voterid, address _walletaddress) {
-        voterid = _voterid;
-        voteraddress = _walletaddress;
+    function enterythevote(uint _votecandidate,bytes32 _voterid) public {
+        votecandidate = _votecandidate;
+        emit storevote(votecandidate, _voterid, msg.sender, block.timestamp);
     }
 }

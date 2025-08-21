@@ -1,7 +1,7 @@
 import hre from "hardhat"
 
 async function main() {
-    const votecontract= await hre.ethers.getContractFactory("saveallvoter")
+    const votecontract= await hre.ethers.getContractFactory("Voter")
     const d_votecontract= await votecontract.deploy();
     await d_votecontract.waitForDeployment();
     console.log("Issue contract in deopoly address: ",await d_votecontract.getAddress())   
