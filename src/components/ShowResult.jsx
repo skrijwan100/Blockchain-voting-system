@@ -7,6 +7,11 @@ import { candidates } from "../../votecandidate"
 const VotingResultsPage = () => {
     const [animatedVotes, setAnimatedVotes] = useState({});
     const [can1,setCan1]=useState([])
+    const [can2,setCan2]=useState([])
+    const [can3,setCan3]=useState([])
+    const [can4,setCan4]=useState([])
+    const [one,setOne]=useState(true)
+
     const [Mainloder,setMainloder]=useState(false)
 
     // Mock election data with results
@@ -47,12 +52,22 @@ const VotingResultsPage = () => {
             )
             const votestore= await votedata.filters.storevote(1774)
             const canEnevent= await votedata.queryFilter(votestore)
-            console.log(canEnevent)
+            // const votestore1= await votedata.filters.storevote(1773)
+            // const canEnevent1= await votedata.queryFilter(votestore1)
+            // const votestore2= await votedata.filters.storevote(1772)
+            // const canEnevent2= await votedata.queryFilter(votestore2)
+            // const votestore3= await votedata.filters.storevote(1771)
+            // const canEnevent3= await votedata.queryFilter(votestore3)
+            // console.log(canEnevent)
             setCan1(canEnevent)
+            // setCan2(canEnevent1)
+            // setCan3(canEnevent2)
+            // setCan4(canEnevent3)
             setMainloder(false)
+            setOne(false)
         }
         fecthvotecountdata()
-    }, [])
+    }, [one])
 
     const getProgressColor = (color) => {
         const colors = {
@@ -150,7 +165,10 @@ const VotingResultsPage = () => {
                                         <div className="text-3xl font-bold text-white">
                                             {/* {animatedVotes[candidate.id]?.toLocaleString() || 0} */}
                                             
-                                            {candidate.canID==1774?can1.length:"0"}
+                                            {candidate.canID==1774?can1.length:""}
+                                            {candidate.canID==1773?can2.length:""}
+                                            {candidate.canID==1772?can3.length:""}
+                                            {candidate.canID==1771?can4.length:""}
 
                                         </div>
 
