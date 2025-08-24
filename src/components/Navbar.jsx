@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react'
 import logo from "../assets/logo.png"
+import { Link } from 'react-router'
 export default function Navbar({account,bal}) {
-    useEffect(()=>{
-        console.log(account,bal)
-    })
   return (
     <div>
       <nav className="bg-black/20 backdrop-blur-md border-b border-white/10 relative z-10">
@@ -19,15 +17,12 @@ export default function Navbar({account,bal}) {
 
             {/* Navigation Links */}
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#" className="text-white hover:text-emerald-400 transition-colors font-medium">
+              <Link to="/" className="text-white hover:text-emerald-400 transition-colors font-medium">
                 Home
-              </a>
-              <a href="#" className="text-gray-300 hover:text-emerald-400 transition-colors font-medium">
-                Submit Vote
-              </a>
-              <a href="#" className="text-gray-300 hover:text-emerald-400 transition-colors font-medium">
+              </Link>
+              <Link to="/result" className="text-gray-300 hover:text-emerald-400 transition-colors font-medium">
                 View Results
-              </a>
+              </Link>
             </div>
             {/*Metamask detiles*/}
              {account? <div
