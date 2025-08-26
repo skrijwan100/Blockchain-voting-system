@@ -6,11 +6,10 @@ import { ethers } from 'ethers';
 import { candidates } from "../../votecandidate"
 const VotingResultsPage = () => {
     const [animatedVotes, setAnimatedVotes] = useState({});
-    const [can1,setCan1]=useState([])
-    const [can2,setCan2]=useState([])
-    const [can3,setCan3]=useState([])
-    const [can4,setCan4]=useState([])
-    const [one,setOne]=useState(true)
+    // const [can1,setCan1]=useState(0)
+    // const [can2,setCan2]=useState(0)
+    // const [can3,setCan3]=useState(0)
+    // const [can4,setCan4]=useState(0)
 
     const [Mainloder,setMainloder]=useState(false)
 
@@ -50,7 +49,7 @@ const VotingResultsPage = () => {
                 votecontract.abi,
                 InfuraProvider
             )
-            const votestore= await votedata.filters.storevote(1774)
+            const votestore= await votedata.filters.storevote()
             const canEnevent= await votedata.queryFilter(votestore)
             // const votestore1= await votedata.filters.storevote(1773)
             // const canEnevent1= await votedata.queryFilter(votestore1)
@@ -59,15 +58,25 @@ const VotingResultsPage = () => {
             // const votestore3= await votedata.filters.storevote(1771)
             // const canEnevent3= await votedata.queryFilter(votestore3)
             // console.log(canEnevent)
-            setCan1(canEnevent)
+            // setCan1(canEnevent)
+            let candidate1=0;
+            let candidate2=0;
+            let candidate3=0;
+            let candidate4=0;
+            for(let i=0;i<canEnevent.length;i++){
+                console.log(canEnevent[i].args.votecandidate)
+                if(canEnevent[i].args.votecandidate==1774){
+                    candidate1=candidate1+1
+                }
+                
+            }
             // setCan2(canEnevent1)
             // setCan3(canEnevent2)
             // setCan4(canEnevent3)
             setMainloder(false)
-            setOne(false)
         }
         fecthvotecountdata()
-    }, [one])
+    }, [])
 
     const getProgressColor = (color) => {
         const colors = {
@@ -164,11 +173,11 @@ const VotingResultsPage = () => {
                                         </div>
                                         <div className="text-3xl font-bold text-white">
                                             {/* {animatedVotes[candidate.id]?.toLocaleString() || 0} */}
-                                            
-                                            {candidate.canID==1774?can1.length:""}
+00000000
+                                            {/* {candidate.canID==1774?can1.length:""}
                                             {candidate.canID==1773?can2.length:""}
                                             {candidate.canID==1772?can3.length:""}
-                                            {candidate.canID==1771?can4.length:""}
+                                            {candidate.canID==1771?can4.length:""} */}
 
                                         </div>
 
