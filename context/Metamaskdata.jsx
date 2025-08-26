@@ -1,16 +1,16 @@
 import React, {createContext, useContext, useState } from 'react'
-export const Metamaskdata=createContext()
+export const Tnx=createContext()
 
-const MetamaskdataProvider=({Children})=>{
-    const [data,setData]=useState({address:"",blance:""})
+const TnxProvider=({children })=>{
+       const [TnxHash, setTnxHash] = useState('')
     return(
-        <Metamaskdata.Provider value={[data,setData]}>
+        <Tnx.Provider value={[TnxHash,setTnxHash]}>
         
-        {Children}
-        </Metamaskdata.Provider>
+        {children }
+        </Tnx.Provider>
     )
 }
-export default MetamaskdataProvider;
-export function usedata(){
-    return useContext(Metamaskdata)
+export default TnxProvider;
+export function useTnx(){
+    return useContext(Tnx)
 }

@@ -23,6 +23,24 @@ export const voters = [
     "name": "Sneha Gupta",
     "age": 28,
 
+  },
+  {
+    "id": "VOTER005",
+    "name": "Sneha Gupa",
+    "age": 28,
+
+  },
+  {
+    "id": "VOTER006",
+    "name": "Sneh Gupta",
+    "age": 28,
+
+  },
+  {
+    "id": "VOTER007",
+    "name": "Snha Gupta",
+    "age": 28,
+
   }
 ]
 

@@ -5,12 +5,13 @@ import { BrowserProvider } from 'ethers';
 import votecontract from "../contracts/Votesystem.sol/Voter.json"
 import { ethers } from 'ethers';
 import { keccak256, toUtf8Bytes } from "ethers";
+import { useTnx } from '../../context/Metamaskdata';
 const VotingInterface = ({ voterID }) => {
     const [selectedCandidate, setSelectedCandidate] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [voteSubmitted, setVoteSubmitted] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
-    const [TnxHash, setTnxHash] = useState('')
+    const [TnxHash, setTnxHash] = useTnx()
     const [mainloder,setMainloder]=useState(false)
     const [event,setEvent]=useState([])
     const { ethereum } = window;

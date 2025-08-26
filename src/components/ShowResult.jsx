@@ -4,13 +4,14 @@ import Navbar from './Navbar';
 import votecontract from "../contracts/Votesystem.sol/Voter.json"
 import { ethers } from 'ethers';
 import { candidates } from "../../votecandidate"
+import { useTnx } from '../../context/Metamaskdata';
 const VotingResultsPage = () => {
     const [animatedVotes, setAnimatedVotes] = useState({});
-    // const [can1,setCan1]=useState(0)
-    // const [can2,setCan2]=useState(0)
-    // const [can3,setCan3]=useState(0)
-    // const [can4,setCan4]=useState(0)
-
+    const [can1,setCan1]=useState(0)
+    const [can2,setCan2]=useState(0)
+    const [can3,setCan3]=useState(0)
+    const [can4,setCan4]=useState(0)
+   const [TnxHash, setTnxHash] = useTnx()
     const [Mainloder,setMainloder]=useState(false)
 
     // Mock election data with results
@@ -25,20 +26,6 @@ const VotingResultsPage = () => {
 
     // Animate vote counts on load
     useEffect(() => {
-        // candidates.forEach((candidate, index) => {
-        //     setTimeout(() => {
-        //         let count = 0;
-        //         const increment = candidate.votes / 60;
-        //         const timer = setInterval(() => {
-        //             count += increment;
-        //             if (count >= candidate.votes) {
-        //                 count = candidate.votes;
-        //                 clearInterval(timer);
-        //             }
-        //             setAnimatedVotes(prev => ({ ...prev, [candidate.id]: Math.floor(count) }));
-        //         }, 16);
-        //     }, index * 200);
-        // });
         const fecthvotecountdata = async () => {
             setMainloder(true)
             const InfuraProvider = new ethers.JsonRpcProvider(
@@ -51,25 +38,33 @@ const VotingResultsPage = () => {
             )
             const votestore= await votedata.filters.storevote()
             const canEnevent= await votedata.queryFilter(votestore)
-            // const votestore1= await votedata.filters.storevote(1773)
-            // const canEnevent1= await votedata.queryFilter(votestore1)
-            // const votestore2= await votedata.filters.storevote(1772)
-            // const canEnevent2= await votedata.queryFilter(votestore2)
-            // const votestore3= await votedata.filters.storevote(1771)
-            // const canEnevent3= await votedata.queryFilter(votestore3)
-            // console.log(canEnevent)
-            // setCan1(canEnevent)
             let candidate1=0;
             let candidate2=0;
             let candidate3=0;
             let candidate4=0;
             for(let i=0;i<canEnevent.length;i++){
-                console.log(canEnevent[i].args.votecandidate)
                 if(canEnevent[i].args.votecandidate==1774){
                     candidate1=candidate1+1
+
                 }
-                
+                else if(canEnevent[i].args.votecandidate==1773){
+                    candidate2=candidate2+1
+                }
+                else if(canEnevent[i].args.votecandidate==1772){
+                    candidate3=candidate3+1
+                }
+                else if(canEnevent[i].args.votecandidate==1771){
+                    candidate4=candidate4+1
+                }
+                else{
+                    continue;
+                }
+
             }
+            setCan1(candidate1)
+            setCan2(candidate2)
+            setCan3(candidate3)
+            setCan4(candidate4)
             // setCan2(canEnevent1)
             // setCan3(canEnevent2)
             // setCan4(canEnevent3)
@@ -77,16 +72,6 @@ const VotingResultsPage = () => {
         }
         fecthvotecountdata()
     }, [])
-
-    const getProgressColor = (color) => {
-        const colors = {
-            emerald: 'bg-gradient-to-r from-emerald-500 to-emerald-600',
-            teal: 'bg-gradient-to-r from-teal-500 to-teal-600',
-            cyan: 'bg-gradient-to-r from-cyan-500 to-cyan-600',
-            slate: 'bg-gradient-to-r from-slate-500 to-slate-600'
-        };
-        return colors[color] || colors.slate;
-    };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-emerald-900 via-teal-800 to-cyan-900 relative overflow-hidden">
@@ -173,11 +158,10 @@ const VotingResultsPage = () => {
                                         </div>
                                         <div className="text-3xl font-bold text-white">
                                             {/* {animatedVotes[candidate.id]?.toLocaleString() || 0} */}
-00000000
-                                            {/* {candidate.canID==1774?can1.length:""}
-                                            {candidate.canID==1773?can2.length:""}
-                                            {candidate.canID==1772?can3.length:""}
-                                            {candidate.canID==1771?can4.length:""} */}
+                                            {candidate.canID==1774?can1:""}
+                                            {candidate.canID==1773?can2:""}
+                                            {candidate.canID==1772?can3:""}
+                                            {candidate.canID==1771?can4:""}
 
                                         </div>
 
@@ -202,7 +186,7 @@ const VotingResultsPage = () => {
                     <div className="bg-black/20 rounded-lg p-4 text-center">
                         <div className="text-gray-400 text-sm mb-1">Latest Block Hash:</div>
                         <div className="text-emerald-400 font-mono text-sm break-all">
-                            0x2f8a9b1c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f
+                            {TnxHash}
                         </div>
                     </div>
                 </div>
