@@ -59,7 +59,6 @@ const VotingInterface = ({ voterID }) => {
 
 
     };
-
     const confirmVote = async (candidateid) => {
         setIsSubmitting(true);
         setShowConfirmation(false);
