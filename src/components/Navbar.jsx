@@ -30,7 +30,6 @@ export default function Navbar({account,bal}) {
                         title="Click to copy address"
                     >
                         <div style={{height:"15px",width:"15px",backgroundColor:"#00ff41",borderRadius:"50%"}}>
-
                         </div>
 
                         {/* Address & Balance */}
